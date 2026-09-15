@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Exotory - Beli Produk</title>
+  <meta name="description" content="Beli produk digital Exotory - Produk Lokal & APK Premium" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=ShareTechMono&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- QRCode -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- APP BAR                                        -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <header class="app-bar">
+    <button class="back-btn" onclick="history.back()">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <div class="app-bar-title">
+      <div class="market-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <span class="title-text">BELI PRODUK</span>
+    </div>
+    
+    <div class="app-bar-actions">
+      <button class="cart-btn" id="cartBtn" onclick="onCartClick()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cartBadge" style="display: none;">1</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- TAB BAR                                        -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="lokal" onclick="switchTab('lokal')">
+      <i class="fas fa-folder-open"></i>
+      <span>PRODUK LOKAL</span>
+    </button>
+    <button class="tab-btn" data-tab="apk" onclick="switchTab('apk')">
+      <i class="fab fa-android"></i>
+      <span>PRODUK APK</span>
+    </button>
+    <div class="tab-indicator" id="tabIndicator"></div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- TAB CONTENT                                    -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main class="content">
+
+    <!-- ═══ TAB PRODUK LOKAL ═══ -->
+    <section class="tab-content active" id="tab-lokal">
+      
+      <!-- Banner -->
+      <div class="banner-card purple-blue">
+        <div class="banner-icon">
+          <i class="fas fa-tag"></i>
+        </div>
+        <div class="banner-text">
+          <h3>PRODUK LOKAL - DISKON SPESIAL</h3>
+          <p>Setelah bayar, hubungi Telegram/WA untuk ambil produk</p>
+        </div>
+      </div>
+
+      <!-- Section Header -->
+      <div class="section-header">
+        <div class="section-bar purple"></div>
+        <h2>PILIH PRODUK LOKAL</h2>
+        <span class="count-badge">6 PRODUK</span>
+      </div>
+
+      <!-- Grid Produk Lokal -->
+      <div class="grid-produk" id="lokalGrid">
+        <!-- Diisi oleh JS -->
+      </div>
+
+    </section>
+
+    <!-- ═══ TAB PRODUK APK ═══ -->
+    <section class="tab-content" id="tab-apk">
+      
+      <!-- Banner -->
+      <div class="banner-card blue-pink">
+        <div class="banner-icon">
+          <i class="fas fa-key"></i>
+        </div>
+        <div class="banner-text">
+          <h3>PRODUK APK - AKSES PREMIUM</h3>
+          <p>Akun dibuat otomatis setelah pembayaran sukses</p>
+        </div>
+      </div>
+
+      <!-- Section Header -->
+      <div class="section-header">
+        <div class="section-bar blue"></div>
+        <h2>PILIH ROLE APK</h2>
+        <span class="count-badge">8 PRODUK</span>
+      </div>
+
+      <!-- List Produk APK -->
+      <div class="list-produk" id="apkList">
+        <!-- Diisi oleh JS -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- BOTTOM BAR (Total + Beli)                      -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <footer class="bottom-bar" id="bottomBar" style="display: none;">
+    <div class="bottom-bar-inner">
+      <div class="selected-info">
+        <i class="fas fa-check-circle"></i>
+        <span class="badge-cat" id="badgeCat">LOKAL</span>
+        <span class="selected-name" id="selectedName">-</span>
+      </div>
+      <div class="bottom-bar-row">
+        <div class="price-info">
+          <span class="label">TOTAL HARGA</span>
+          <span class="price" id="totalPrice">Rp 0</span>
+        </div>
+        <button class="btn-beli" onclick="showBuyConfirmation()">
+          <i class="fas fa-shopping-cart"></i>
+          <span>BELI</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- MODAL DETAIL PRODUK                            -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-header-icon" id="detailIcon">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <h3>DETAIL PRODUK</h3>
+        <button class="modal-close" onclick="closeModal('detailModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="detailBody">
+        <!-- Diisi oleh JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- MODAL KONFIRMASI BELI                          -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-dialog">
+      <div class="dialog-icon success-gradient">
+        <i class="fas fa-shopping-cart"></i>
+      </div>
+      <h3 class="dialog-title">YAKIN INGIN MEMBELI?</h3>
+      <p class="dialog-subtitle">Jika yakin, pilih BELI di bawah ini</p>
+      
+      <div class="dialog-info-box">
+        <div class="dialog-info-row">
+          <span>Kategori</span>
+          <span id="confirmKategori">-</span>
+        </div>
+        <div class="dialog-info-row">
+          <span>Produk</span>
+          <span id="confirmProduk">-</span>
+        </div>
+        <div class="dialog-info-row">
+          <span>Harga</span>
+          <span class="harga" id="confirmHarga">Rp 0</span>
+        </div>
+      </div>
+      
+      <div class="dialog-actions">
+        <button class="btn-dialog btn-cancel" onclick="onCancelBuy()">
+          <i class="fas fa-times"></i>
+          <span>KEMBALI</span>
+        </button>
+        <button class="btn-dialog btn-confirm" onclick="onConfirmBuy()">
+          <i class="fas fa-check"></i>
+          <span>BELI</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- MODAL FORM USERNAME & PASSWORD (untuk APK)     -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="accountModal">
+    <div class="modal-dialog">
+      <div class="dialog-icon purple-gradient">
+        <i class="fas fa-user-plus"></i>
+      </div>
+      <h3 class="dialog-title">BUAT AKUN BARU</h3>
+      <p class="dialog-subtitle">Isi username & password untuk akun APK</p>
+      
+      <div class="input-group">
+        <label>USERNAME</label>
+        <input type="text" id="inputUsername" placeholder="min 3 karakter" autocomplete="off">
+      </div>
+      
+      <div class="input-group">
+        <label>PASSWORD</label>
+        <input type="text" id="inputPassword" placeholder="min 4 karakter" autocomplete="off">
+      </div>
+      
+      <div class="dialog-actions">
+        <button class="btn-dialog btn-cancel" onclick="closeModal('accountModal')">
+          <i class="fas fa-times"></i>
+          <span>BATAL</span>
+        </button>
+        <button class="btn-dialog btn-confirm" onclick="onSubmitAccount()">
+          <i class="fas fa-check"></i>
+          <span>LANJUT</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- MODAL QRIS PAYMENT                             -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="qrisModal">
+    <div class="modal-dialog qris-dialog">
+      <div class="modal-header-simple">
+        <div class="qris-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <h3>QRIS BAYAR</h3>
+        <button class="modal-close" onclick="onCancelQris()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="qris-info">
+        <div class="qris-info-row">
+          <span>Kategori</span>
+          <span id="qrisKategori">-</span>
+        </div>
+        <div class="qris-info-row">
+          <span>Produk</span>
+          <span id="qrisProduk">-</span>
+        </div>
+        <div class="qris-info-row">
+          <span>Harga</span>
+          <span class="harga" id="qrisHarga">Rp 0</span>
+        </div>
+      </div>
+      
+      <div class="qris-code-wrapper">
+        <div id="qrisCode"></div>
+      </div>
+      
+      <div class="cara-bayar">
+        <h4><i class="fas fa-lightbulb"></i> CARA BAYAR</h4>
+        <div class="step-item">
+          <span class="step-num">1</span>
+          <span>Buka aplikasi e-wallet / m-banking</span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">2</span>
+          <span>Scan QR code di atas</span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">3</span>
+          <span id="stepBayar">Bayar sesuai nominal</span>
+        </div>
+        <div class="step-item">
+          <span class="step-num">4</span>
+          <span>Tunggu deteksi otomatis (± 10 detik)</span>
+        </div>
+      </div>
+      
+      <div class="status-box" id="statusBox">
+        <div class="status-dot"></div>
+        <span class="status-text" id="statusText">Menunggu pembayaran...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- MODAL SUKSES PEMBAYARAN                        -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-dialog success-dialog">
+      <div class="success-icon-big">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3 class="success-title" id="successTitle">PEMBAYARAN BERHASIL</h3>
+      
+      <div class="success-info-box" id="successInfoBox">
+        <!-- Info produk / akun, diisi JS -->
+      </div>
+      
+      <div class="notif-screenshot" id="notifScreenshot">
+        <i class="fas fa-camera"></i>
+        <span>SCREENSHOT BUKTI INI UNTUK MENGAMBIL PRODUK NYA</span>
+      </div>
+      
+      <div class="contact-section" id="contactSection">
+        <p>UNTUK PENGAMBILAN PRODUK BISA HUBUNGI CONTACT DIBAWAH INI</p>
+        <div class="contact-buttons">
+          <a href="https://t.me/kaichonew" target="_blank" class="btn-contact telegram">
+            <i class="fab fa-telegram"></i> TELEGRAM
+          </a>
+          <a href="https://wa.me/6281234567890" target="_blank" class="btn-contact whatsapp">
+            <i class="fab fa-whatsapp"></i> WHATSAPP
+          </a>
+        </div>
+      </div>
+      
+      <div class="login-section" id="loginSection" style="display: none;">
+        <a href="https://t.me/exotoryultra" target="_blank" class="btn-login">
+          <i class="fas fa-sign-in-alt"></i> LOGIN KE APLIKASI
+        </a>
+      </div>
+      
+      <button class="btn-tutup" onclick="onCloseSuccess()">
+        TUTUP & SELESAI
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- TOAST / SNACKBAR                               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="toast" id="toast">
+    <i class="fas fa-info-circle" id="toastIcon"></i>
+    <span id="toastText">Info</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
